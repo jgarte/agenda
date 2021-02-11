@@ -1,0 +1,61 @@
+#!/usr/bin/env python3
+# Console agenda - copyright (c) 2021 Nicolas P. Rougier
+# Released under the GNU General Public Licence version 3
+
+if __name__ == "__main__":
+    import datetime
+    import holidays
+    from terminal import Terminal
+    from style import DefaultStyle
+    from agenda import Agenda
+    
+    day = None
+    mouse = None
+    agenda = Agenda([ "/Users/rougier/Documents/org/agenda.org",
+                      "/Users/rougier/Documents/org/book.org" ],
+                    holidays.France(), DefaultStyle)
+    
+    with Terminal() as terminal:
+        agenda.terminal = terminal
+        agenda.terminal.clear()
+        agenda.display_calendar()
+        agenda.display_events()
+
+        while True:
+            c = agenda.terminal.read()
+
+            # Quit
+            if c == "q":
+                break
+
+            # Reload agenda
+            elif c == "r":
+                agenda.populate()
+                agenda.terminal.clear()
+                agenda.display_calendar()
+                agenda.display_events()
+                
+            elif c == "\033":
+                c = agenda.terminal.read(2)
+                if c == "[M":
+                    # Clear previous selection
+                    if mouse and day:
+                        month, day, mouse = agenda.get_day(mouse)
+                        if day:
+                            agenda.terminal.write(agenda.format_day(agenda.year, month, day), mouse, flush=True)
+
+                    # Highlight new selection
+                    control = agenda.terminal.read()
+                    x = ord(terminal.read()) - 32
+                    y = ord(terminal.read()) - 32
+                    month, day, mouse = agenda.get_day((x,y))
+
+                    # Display new info (day or week)
+                    if day:
+                        agenda.terminal.write(agenda.style.highlight + "%2d " % day + agenda.style.none, mouse)
+                        agenda.display_events(datetime.date(agenda.year, month, day))
+                    else:
+                        agenda.display_events()
+                        
+                    agenda.terminal.flush()
+
