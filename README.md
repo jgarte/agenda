@@ -14,8 +14,8 @@ for a the current week.
 ### Dependencies
 
 ```
-pip install org-parse  # See https://github.com/karlicoss/orgparse
-pip install holidays   # See https://github.com/dr-prodigy/python-holidays
+pip install orgparse  # See https://github.com/karlicoss/orgparse
+pip install holidays  # See https://github.com/dr-prodigy/python-holidays
 ```
 
 ### Example output
