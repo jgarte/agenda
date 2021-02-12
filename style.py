@@ -89,7 +89,7 @@ def BG(R,G,B):
     return "\033[48;2;%d;%d;%dm" % (R,G,B)
 
 
-class DefaultStyle:
+class default:
 
     none           = NONE
     

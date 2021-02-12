@@ -3,17 +3,28 @@
 # Released under the GNU General Public Licence version 3
 
 if __name__ == "__main__":
+    import argparse
     import datetime
     import holidays
-    from terminal import Terminal
-    from style import DefaultStyle
+
+    import style
     from agenda import Agenda
+    from terminal import Terminal
+
+    parser = argparse.ArgumentParser(description='Console agenda.')
+    parser.add_argument("file", type=str, nargs="+", default=[],
+                        help='Agenda file (org format)')
+    parser.add_argument('--holidays', type=str, default="France",
+                        help='Country (fullname or ISO code) to consider for holidays')
+    args = parser.parse_args()
+
     
     day = None
     mouse = None
-    agenda = Agenda([ "/Users/rougier/Documents/org/agenda.org",
-                      "/Users/rougier/Documents/org/book.org" ],
-                    holidays.France(), DefaultStyle)
+    agenda = Agenda(args.file,
+                    getattr(holidays, args.holidays)(),
+                    style.default)
+
     
     with Terminal() as terminal:
         agenda.terminal = terminal
